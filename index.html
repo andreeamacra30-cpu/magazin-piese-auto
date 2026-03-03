@@ -1,1 +1,1093 @@
 
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Magazin piese auto — Clienți & Fișe</title>
+<style>
+:root{
+--bg:#0b1020;
+--panel:#121a33;
+--panel2:#0f1730;
+--text:#e9ecff;
+--muted:#a9b1d6;
+--brand:#6ea8ff;
+--ok:#37d67a;
+--bad:#ff4d6d;
+--warn:#ffcc66;
+--border:rgba(255,255,255,.10);
+--shadow: 0 10px 30px rgba(0,0,0,.35);
+--radius:14px;
+--radius2:10px;
+--gap:14px;
+--font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background: radial-gradient(1200px 800px at 20% 0%, rgba(110,168,255,.18), transparent 60%),
+radial-gradient(900px 700px at 80% 20%, rgba(55,214,122,.10), transparent 55%),
+var(--bg);
+color:var(--text);
+font-family:var(--font);
+}
+header{
+position:sticky; top:0; z-index:5;
+background: rgba(11,16,32,.75);
+backdrop-filter: blur(10px);
+border-bottom:1px solid var(--border);
+}
+.topbar{
+max-width:1200px;
+margin:0 auto;
+padding:14px 16px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+}
+.brand{
+display:flex; align-items:center; gap:10px;
+font-weight:800; letter-spacing:.2px;
+}
+.logo{
+width:36px;height:36px;border-radius:12px;
+background: linear-gradient(135deg, rgba(110,168,255,1), rgba(55,214,122,1));
+box-shadow: var(--shadow);
+}
+.right-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.pill{
+font-size:12px;
+color:var(--muted);
+padding:7px 10px;
+border:1px solid var(--border);
+border-radius:999px;
+background: rgba(255,255,255,.03);
+}
+
+.app{
+max-width:1200px;
+margin:0 auto;
+padding:16px;
+display:grid;
+grid-template-columns: 360px 1fr;
+gap:16px;
+}
+@media (max-width: 980px){
+.app{ grid-template-columns: 1fr; }
+}
+
+.panel{
+background: linear-gradient(180deg, rgba(18,26,51,.98), rgba(15,23,48,.98));
+border:1px solid var(--border);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+overflow:hidden;
+}
+.panel-header{
+padding:14px 14px 12px 14px;
+border-bottom:1px solid var(--border);
+display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.panel-header h2{
+margin:0; font-size:15px; font-weight:800;
+}
+.panel-body{ padding:14px; }
+
+.row{ display:flex; gap:10px; align-items:center; }
+.col{ display:flex; flex-direction:column; gap:10px; }
+
+input, button, select, textarea{
+font-family:inherit;
+color:var(--text);
+}
+.input{
+width:100%;
+padding:10px 12px;
+border-radius:12px;
+border:1px solid var(--border);
+background: rgba(255,255,255,.04);
+outline:none;
+}
+.input:focus{ border-color: rgba(110,168,255,.55); box-shadow:0 0 0 3px rgba(110,168,255,.18); }
+.btn{
+padding:10px 12px;
+border-radius:12px;
+border:1px solid var(--border);
+background: rgba(255,255,255,.05);
+cursor:pointer;
+font-weight:700;
+}
+.btn:hover{ background: rgba(255,255,255,.08); }
+.btn:active{ transform: translateY(1px); }
+.btn.primary{
+border-color: rgba(110,168,255,.55);
+background: rgba(110,168,255,.18);
+}
+.btn.ok{
+border-color: rgba(55,214,122,.55);
+background: rgba(55,214,122,.14);
+}
+.btn.bad{
+border-color: rgba(255,77,109,.55);
+background: rgba(255,77,109,.14);
+}
+.btn.warn{
+border-color: rgba(255,204,102,.55);
+background: rgba(255,204,102,.14);
+}
+.btn.small{ padding:7px 10px; border-radius:10px; font-size:12px; }
+.btn.icon{ width:40px; padding:10px 0; display:flex; justify-content:center; }
+.btn:disabled{
+opacity:.5; cursor:not-allowed;
+}
+
+.list{
+display:flex; flex-direction:column; gap:10px;
+}
+.client-card{
+padding:12px;
+border:1px solid var(--border);
+border-radius:14px;
+background: rgba(255,255,255,.03);
+cursor:pointer;
+display:flex; justify-content:space-between; align-items:center; gap:12px;
+}
+.client-card:hover{ background: rgba(255,255,255,.05); }
+.client-card.active{
+border-color: rgba(110,168,255,.55);
+background: rgba(110,168,255,.10);
+}
+.client-name{ font-weight:800; }
+.client-meta{ color:var(--muted); font-size:12px; margin-top:2px; }
+.money{
+font-weight:900;
+font-variant-numeric: tabular-nums;
+white-space:nowrap;
+}
+.money.bad{ color: #ff9db0; }
+.money.ok{ color: #9ff0c2; }
+
+.tabs{
+display:flex;
+gap:8px;
+padding:10px 14px 0 14px;
+}
+.tab{
+border:1px solid var(--border);
+background: rgba(255,255,255,.04);
+color:var(--muted);
+padding:8px 12px;
+border-radius:999px;
+cursor:pointer;
+font-weight:800;
+font-size:12px;
+}
+.tab.active{
+color:var(--text);
+border-color: rgba(110,168,255,.55);
+background: rgba(110,168,255,.14);
+}
+
+.items-toolbar{
+display:flex; flex-wrap:wrap;
+gap:10px;
+align-items:center;
+justify-content:space-between;
+margin-bottom:10px;
+}
+.items-toolbar .left, .items-toolbar .right{
+display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+
+table{
+width:100%;
+border-collapse:separate;
+border-spacing:0;
+overflow:hidden;
+border:1px solid var(--border);
+border-radius:14px;
+background: rgba(255,255,255,.02);
+}
+th, td{
+padding:10px 10px;
+border-bottom:1px solid var(--border);
+text-align:left;
+vertical-align:middle;
+font-size:13px;
+}
+th{ color:var(--muted); font-weight:900; background: rgba(255,255,255,.03); }
+tr:last-child td{ border-bottom:none; }
+td.mono{ font-variant-numeric: tabular-nums; white-space:nowrap; }
+td.right{ text-align:right; }
+.muted{ color:var(--muted); }
+.hint{ font-size:12px; color:var(--muted); line-height:1.35; }
+.empty{
+border:1px dashed rgba(255,255,255,.18);
+border-radius:14px;
+padding:14px;
+color:var(--muted);
+background: rgba(255,255,255,.02);
+}
+
+/* Modal */
+.modal-backdrop{
+position:fixed; inset:0; z-index:50;
+background: rgba(0,0,0,.55);
+display:none;
+align-items:center; justify-content:center;
+padding:16px;
+}
+.modal{
+width:min(560px, 100%);
+background: linear-gradient(180deg, rgba(18,26,51,.98), rgba(15,23,48,.98));
+border:1px solid var(--border);
+border-radius:18px;
+box-shadow: var(--shadow);
+overflow:hidden;
+}
+.modal-header{
+padding:14px;
+display:flex; justify-content:space-between; align-items:center;
+border-bottom:1px solid var(--border);
+}
+.modal-header h3{ margin:0; font-size:15px; font-weight:900; }
+.modal-body{ padding:14px; display:flex; flex-direction:column; gap:12px; }
+.modal-footer{
+padding:14px;
+border-top:1px solid var(--border);
+display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;
+}
+.grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+@media (max-width:560px){ .grid2{ grid-template-columns: 1fr; } }
+
+.toast{
+position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+background: rgba(15,23,48,.98);
+border:1px solid var(--border);
+border-radius:999px;
+padding:10px 14px;
+color:var(--text);
+box-shadow: var(--shadow);
+display:none;
+z-index:100;
+font-size:13px;
+max-width:min(680px, 92vw);
+text-align:center;
+}
+
+.danger-note{
+padding:10px 12px;
+border-radius:14px;
+border:1px solid rgba(255,77,109,.35);
+background: rgba(255,77,109,.08);
+color:#ffd0d9;
+font-size:12px;
+line-height:1.35;
+}
+</style>
+</head>
+
+<body>
+<header>
+<div class="topbar">
+<div class="brand">
+<div class="logo" aria-hidden="true"></div>
+<div>
+<div>Magazin piese auto</div>
+<div class="muted" style="font-size:12px;">Clienți • Neachitat • Istoric (local, offline)</div>
+</div>
+</div>
+
+<div class="right-actions">
+<span class="pill" id="pillCounts">0 clienți • 0 piese neachitate</span>
+<button class="btn small warn" id="btnExport">Export (JSON)</button>
+<button class="btn small" id="btnImport">Import</button>
+<button class="btn small bad" id="btnReset">Reset date</button>
+</div>
+</div>
+</header>
+
+<main class="app">
+<!-- Left: Clients -->
+<section class="panel" aria-label="Clienți">
+<div class="panel-header">
+<h2>Clienți</h2>
+<button class="btn primary small" id="btnAddClient">+ Client</button>
+</div>
+<div class="panel-body">
+<div class="col">
+<input class="input" id="clientSearch" placeholder="Caută client..." />
+<div class="hint">Click pe un client ca să intri în fișa lui. Totalurile sunt afișate <b>întregi</b> (rotunjire normală).</div>
+<div class="list" id="clientsList"></div>
+<div class="empty" id="clientsEmpty" style="display:none;">
+Nu ai clienți încă. Apasă <b>+ Client</b>.
+</div>
+</div>
+</div>
+</section>
+
+<!-- Right: Client details -->
+<section class="panel" aria-label="Fișa clientului">
+<div class="panel-header">
+<div>
+<h2 id="detailTitle">Fișa clientului</h2>
+<div class="muted" id="detailSubtitle" style="font-size:12px;">Selectează un client din stânga</div>
+</div>
+<div class="row" id="clientHeaderActions" style="display:none;">
+<button class="btn small" id="btnEditClient">Editează</button>
+<button class="btn small bad" id="btnDeleteClient">Șterge client</button>
+</div>
+</div>
+
+<div class="tabs" id="tabs" style="display:none;">
+<button class="tab active" data-tab="unpaid">Neachitat</button>
+<button class="tab" data-tab="paid">Istoric</button>
+</div>
+
+<div class="panel-body" id="detailBody">
+<div class="empty">
+Selectează un client ca să vezi piesele, să adaugi și să marchezi ca achitate.
+</div>
+</div>
+</section>
+</main>
+
+<!-- Modal: Client -->
+<div class="modal-backdrop" id="modalClient">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalClientTitle">
+<div class="modal-header">
+<h3 id="modalClientTitle">Client</h3>
+<button class="btn icon" id="closeClientModal" aria-label="Închide">✕</button>
+</div>
+<div class="modal-body">
+<input class="input" id="clientName" placeholder="Nume client (obligatoriu)" />
+<input class="input" id="clientPhone" placeholder="Telefon (opțional)" />
+<div class="hint">Dacă ai mai mulți clienți cu nume similar, folosește telefonul ca diferențiator.</div>
+</div>
+<div class="modal-footer">
+<button class="btn" id="cancelClient">Anulează</button>
+<button class="btn primary" id="saveClient">Salvează</button>
+</div>
+</div>
+</div>
+
+<!-- Modal: Item -->
+<div class="modal-backdrop" id="modalItem">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalItemTitle">
+<div class="modal-header">
+<h3 id="modalItemTitle">Adaugă piesă</h3>
+<button class="btn icon" id="closeItemModal" aria-label="Închide">✕</button>
+</div>
+<div class="modal-body">
+<input class="input" id="itemName" placeholder="Denumire piesă (obligatoriu)" />
+<div class="grid2">
+<input class="input" id="itemQty" placeholder="Cantitate (ex: 1.5)" inputmode="decimal" />
+<input class="input" id="itemPrice" placeholder="Preț (ex: 120)" inputmode="decimal" />
+</div>
+<textarea class="input" id="itemNotes" placeholder="Observații (opțional)" rows="3"></textarea>
+<div class="hint">Cantitatea acceptă zecimale (1.5 / 1,5). Subtotal = cantitate × preț.</div>
+</div>
+<div class="modal-footer">
+<button class="btn" id="cancelItem">Anulează</button>
+<button class="btn primary" id="saveItem">Adaugă</button>
+</div>
+</div>
+</div>
+
+<!-- Modal: Import -->
+<div class="modal-backdrop" id="modalImport">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalImportTitle">
+<div class="modal-header">
+<h3 id="modalImportTitle">Import date (JSON)</h3>
+<button class="btn icon" id="closeImportModal" aria-label="Închide">✕</button>
+</div>
+<div class="modal-body">
+<div class="danger-note">
+Importul va suprascrie datele curente. Dacă vrei, exportă înainte.
+</div>
+<textarea class="input" id="importText" rows="10" placeholder="Lipește aici JSON-ul exportat..."></textarea>
+</div>
+<div class="modal-footer">
+<button class="btn" id="cancelImport">Anulează</button>
+<button class="btn warn" id="doImport">Import</button>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+Storage + Data Model
+========================= */
+const STORAGE_KEY = "autoPartsShop_v1";
+
+const state = {
+clients: [], // {id, name, phone, createdAt}
+items: [], // {id, clientId, name, qty, price, notes, status:'unpaid'|'paid', addedAt, paidAt}
+selectedClientId: null,
+activeTab: "unpaid",
+clientSearch: ""
+};
+
+function uid(prefix="id"){
+return prefix + "_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+}
+
+function nowISO(){ return new Date().toISOString(); }
+
+function load(){
+try{
+const raw = localStorage.getItem(STORAGE_KEY);
+if(!raw) return;
+const data = JSON.parse(raw);
+if(data && Array.isArray(data.clients) && Array.isArray(data.items)){
+state.clients = data.clients;
+state.items = data.items;
+state.selectedClientId = data.selectedClientId ?? null;
+state.activeTab = data.activeTab ?? "unpaid";
+state.clientSearch = "";
+}
+}catch(e){
+console.warn("Load failed", e);
+}
+}
+
+function save(){
+localStorage.setItem(STORAGE_KEY, JSON.stringify({
+clients: state.clients,
+items: state.items,
+selectedClientId: state.selectedClientId,
+activeTab: state.activeTab
+}));
+}
+
+function moneyRON(n){
+// display as integer (rotunjire normală)
+const rounded = Math.round(Number(n || 0));
+return rounded.toLocaleString("ro-RO") + " RON";
+}
+
+function parseDecimal(s){
+if(typeof s !== "string") s = String(s ?? "");
+s = s.trim().replace(/\s+/g,"").replace(",",".");
+const n = Number(s);
+return Number.isFinite(n) ? n : NaN;
+}
+
+function subtotal(item){
+return Number(item.qty) * Number(item.price);
+}
+
+function clientUnpaidItems(clientId){
+return state.items.filter(it => it.clientId === clientId && it.status === "unpaid");
+}
+function clientPaidItems(clientId){
+return state.items.filter(it => it.clientId === clientId && it.status === "paid");
+}
+function sumUnpaid(clientId){
+return clientUnpaidItems(clientId).reduce((acc,it)=>acc+subtotal(it),0);
+}
+function sumPaid(clientId){
+return clientPaidItems(clientId).reduce((acc,it)=>acc+subtotal(it),0);
+}
+
+function fmtDateTime(iso){
+if(!iso) return "";
+const d = new Date(iso);
+return d.toLocaleString("ro-RO", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+}
+
+/* =========================
+UI Helpers
+========================= */
+const $ = (sel)=>document.querySelector(sel);
+function showToast(msg){
+const el = $("#toast");
+el.textContent = msg;
+el.style.display = "block";
+clearTimeout(showToast._t);
+showToast._t = setTimeout(()=> el.style.display="none", 2400);
+}
+
+function openModal(id){
+const b = document.getElementById(id);
+b.style.display = "flex";
+}
+function closeModal(id){
+const b = document.getElementById(id);
+b.style.display = "none";
+}
+
+/* =========================
+Rendering
+========================= */
+function render(){
+renderCountsPill();
+renderClients();
+renderDetails();
+save();
+}
+
+function renderCountsPill(){
+const unpaidCount = state.items.filter(i=>i.status==="unpaid").length;
+$("#pillCounts").textContent = `${state.clients.length} clienți • ${unpaidCount} piese neachitate`;
+}
+
+function renderClients(){
+const list = $("#clientsList");
+const empty = $("#clientsEmpty");
+list.innerHTML = "";
+
+const q = state.clientSearch.trim().toLowerCase();
+const filtered = state.clients
+.filter(c => !q || c.name.toLowerCase().includes(q) || (c.phone||"").toLowerCase().includes(q))
+.sort((a,b)=> (a.name||"").localeCompare(b.name||"", "ro"));
+
+empty.style.display = filtered.length ? "none" : "block";
+
+filtered.forEach(c=>{
+const card = document.createElement("div");
+card.className = "client-card" + (c.id === state.selectedClientId ? " active" : "");
+const unpaidTotal = sumUnpaid(c.id);
+const unpaidInt = Math.round(unpaidTotal);
+
+card.innerHTML = `
+<div>
+<div class="client-name">${escapeHTML(c.name)}</div>
+<div class="client-meta">${escapeHTML(c.phone || "—")}</div>
+</div>
+<div class="money ${unpaidInt>0 ? "bad" : "ok"}">${moneyRON(unpaidTotal)}</div>
+`;
+card.addEventListener("click", ()=>{
+state.selectedClientId = c.id;
+state.activeTab = state.activeTab || "unpaid";
+render();
+});
+list.appendChild(card);
+});
+}
+
+function renderDetails(){
+const body = $("#detailBody");
+const tabs = $("#tabs");
+const headerActions = $("#clientHeaderActions");
+
+const client = state.clients.find(c=>c.id===state.selectedClientId);
+
+if(!client){
+$("#detailTitle").textContent = "Fișa clientului";
+$("#detailSubtitle").textContent = "Selectează un client din stânga";
+tabs.style.display = "none";
+headerActions.style.display = "none";
+body.innerHTML = `<div class="empty">Selectează un client ca să vezi piesele, să adaugi și să marchezi ca achitate.</div>`;
+return;
+}
+
+$("#detailTitle").textContent = client.name;
+$("#detailSubtitle").textContent = client.phone ? `Telefon: ${client.phone}` : "Telefon: —";
+tabs.style.display = "flex";
+headerActions.style.display = "flex";
+
+// tabs active
+tabs.querySelectorAll(".tab").forEach(t=>{
+t.classList.toggle("active", t.dataset.tab === state.activeTab);
+});
+
+if(state.activeTab === "unpaid"){
+renderUnpaid(body, client);
+}else{
+renderPaid(body, client);
+}
+}
+
+function renderUnpaid(container, client){
+const items = clientUnpaidItems(client.id).sort((a,b)=> (b.addedAt||"").localeCompare(a.addedAt||""));
+const total = items.reduce((acc,it)=>acc+subtotal(it),0);
+
+container.innerHTML = `
+<div class="items-toolbar">
+<div class="left">
+<button class="btn primary small" id="btnAddItem">+ Piesă</button>
+<span class="pill">Total neachitat: <b>${moneyRON(total)}</b></span>
+</div>
+<div class="right">
+<button class="btn ok small" id="btnPaySelected" disabled>Achită selectate</button>
+<button class="btn ok small" id="btnPayAll" ${items.length? "" : "disabled"}>Achită tot</button>
+<button class="btn bad small" id="btnDeleteSelectedUnpaid" disabled>Șterge selectate</button>
+</div>
+</div>
+
+${items.length ? `
+<table>
+<thead>
+<tr>
+<th style="width:34px;"><input type="checkbox" id="chkAllUnpaid" /></th>
+<th>Piesă</th>
+<th class="right">Cant.</th>
+<th class="right">Preț</th>
+<th class="right">Subtotal</th>
+<th style="width:90px;"></th>
+</tr>
+</thead>
+<tbody>
+${items.map(it => `
+<tr>
+<td><input type="checkbox" class="chkItemUnpaid" data-id="${it.id}" /></td>
+<td>
+<div style="font-weight:800">${escapeHTML(it.name)}</div>
+<div class="muted" style="font-size:12px;">
+${escapeHTML(it.notes || "")}
+${it.notes ? " • " : ""}<span title="Data adăugării">${fmtDateTime(it.addedAt)}</span>
+</div>
+</td>
+<td class="mono right">${formatQty(it.qty)}</td>
+<td class="mono right">${formatMoney2(it.price)} RON</td>
+<td class="mono right">${formatMoney2(subtotal(it))} RON</td>
+<td class="right">
+<button class="btn ok small btnPayOne" data-id="${it.id}">Achitat</button>
+</td>
+</tr>
+`).join("")}
+</tbody>
+</table>
+` : `<div class="empty">Nu sunt piese neachitate la acest client.</div>`}
+
+<div class="hint" style="margin-top:10px;">
+Bifezi mai multe piese și apeși <b>Achită selectate</b>. Totalul afișat pe client este întreg (rotunjit), dar în aplicație se păstrează valorile cu zecimale.
+</div>
+`;
+
+// bind
+$("#btnAddItem").addEventListener("click", ()=> openAddItem(client.id));
+const paySelectedBtn = $("#btnPaySelected");
+const delSelectedBtn = $("#btnDeleteSelectedUnpaid");
+
+const itemChecks = Array.from(container.querySelectorAll(".chkItemUnpaid"));
+const chkAll = $("#chkAllUnpaid");
+
+function updateSelectionButtons(){
+const selectedIds = itemChecks.filter(c=>c.checked).map(c=>c.dataset.id);
+paySelectedBtn.disabled = selectedIds.length === 0;
+delSelectedBtn.disabled = selectedIds.length === 0;
+if(chkAll) chkAll.checked = selectedIds.length && selectedIds.length === itemChecks.length;
+}
+
+if(chkAll){
+chkAll.addEventListener("change", ()=>{
+itemChecks.forEach(c=> c.checked = chkAll.checked);
+updateSelectionButtons();
+});
+}
+
+itemChecks.forEach(c=> c.addEventListener("change", updateSelectionButtons));
+
+container.querySelectorAll(".btnPayOne").forEach(btn=>{
+btn.addEventListener("click", ()=>{
+payItems([btn.dataset.id]);
+});
+});
+
+paySelectedBtn.addEventListener("click", ()=>{
+const ids = itemChecks.filter(c=>c.checked).map(c=>c.dataset.id);
+payItems(ids);
+});
+
+$("#btnPayAll").addEventListener("click", ()=>{
+if(!items.length) return;
+if(!confirm("Sigur vrei să marchezi toate piesele ca ACHITATE?")) return;
+payItems(items.map(i=>i.id));
+});
+
+delSelectedBtn.addEventListener("click", ()=>{
+const ids = itemChecks.filter(c=>c.checked).map(c=>c.dataset.id);
+if(!ids.length) return;
+if(!confirm("Ștergi piesele selectate (neachitate)?")) return;
+state.items = state.items.filter(it => !ids.includes(it.id));
+showToast("Piese șterse.");
+render();
+});
+}
+
+function renderPaid(container, client){
+const items = clientPaidItems(client.id).sort((a,b)=> (b.paidAt||"").localeCompare(a.paidAt||""));
+const total = items.reduce((acc,it)=>acc+subtotal(it),0);
+
+container.innerHTML = `
+<div class="items-toolbar">
+<div class="left">
+<span class="pill">Total istoric: <b>${moneyRON(total)}</b></span>
+</div>
+<div class="right">
+<button class="btn bad small" id="btnDeleteSelectedPaid" disabled>Șterge definitiv selectate</button>
+<button class="btn bad small" id="btnDeleteAllPaid" ${items.length? "" : "disabled"}>Șterge tot istoricul</button>
+</div>
+</div>
+
+${items.length ? `
+<table>
+<thead>
+<tr>
+<th style="width:34px;"><input type="checkbox" id="chkAllPaid" /></th>
+<th>Piesă</th>
+<th class="right">Cant.</th>
+<th class="right">Preț</th>
+<th class="right">Subtotal</th>
+<th style="width:150px;">Achitat la</th>
+</tr>
+</thead>
+<tbody>
+${items.map(it => `
+<tr>
+<td><input type="checkbox" class="chkItemPaid" data-id="${it.id}" /></td>
+<td>
+<div style="font-weight:800">${escapeHTML(it.name)}</div>
+<div class="muted" style="font-size:12px;">
+${escapeHTML(it.notes || "")}
+</div>
+</td>
+<td class="mono right">${formatQty(it.qty)}</td>
+<td class="mono right">${formatMoney2(it.price)} RON</td>
+<td class="mono right">${formatMoney2(subtotal(it))} RON</td>
+<td class="mono">${fmtDateTime(it.paidAt)}</td>
+</tr>
+`).join("")}
+</tbody>
+</table>
+` : `<div class="empty">Istoricul este gol pentru acest client.</div>`}
+
+<div class="hint" style="margin-top:10px;">
+Din istoric poți șterge definitiv când vrei (selectezi și apeși <b>Șterge definitiv selectate</b>).
+</div>
+`;
+
+// bind
+const delSelectedBtn = $("#btnDeleteSelectedPaid");
+const itemChecks = Array.from(container.querySelectorAll(".chkItemPaid"));
+const chkAll = $("#chkAllPaid");
+
+function updateSelectionButtons(){
+const selectedIds = itemChecks.filter(c=>c.checked).map(c=>c.dataset.id);
+delSelectedBtn.disabled = selectedIds.length === 0;
+if(chkAll) chkAll.checked = selectedIds.length && selectedIds.length === itemChecks.length;
+}
+
+if(chkAll){
+chkAll.addEventListener("change", ()=>{
+itemChecks.forEach(c=> c.checked = chkAll.checked);
+updateSelectionButtons();
+});
+}
+itemChecks.forEach(c=> c.addEventListener("change", updateSelectionButtons));
+
+delSelectedBtn.addEventListener("click", ()=>{
+const ids = itemChecks.filter(c=>c.checked).map(c=>c.dataset.id);
+if(!ids.length) return;
+if(!confirm("Sigur ștergi definitiv piesele selectate din istoric?")) return;
+state.items = state.items.filter(it => !ids.includes(it.id));
+showToast("Șterse definitiv din istoric.");
+render();
+});
+
+$("#btnDeleteAllPaid").addEventListener("click", ()=>{
+if(!items.length) return;
+if(!confirm("Sigur ștergi TOT istoricul acestui client?")) return;
+state.items = state.items.filter(it => !(it.clientId===client.id && it.status==="paid"));
+showToast("Istoric șters.");
+render();
+});
+}
+
+function formatQty(q){
+// show up to 3 decimals without trailing zeros
+const n = Number(q);
+if(!Number.isFinite(n)) return "—";
+return n.toLocaleString("ro-RO", { maximumFractionDigits: 3 });
+}
+function formatMoney2(n){
+const x = Number(n);
+if(!Number.isFinite(x)) return "0.00";
+return x.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function escapeHTML(str){
+return String(str ?? "").replace(/[&<>"']/g, s => ({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+}[s]));
+}
+
+/* =========================
+Actions
+========================= */
+let editingClientId = null;
+
+function openAddClient(){
+editingClientId = null;
+$("#modalClientTitle").textContent = "Adaugă client";
+$("#clientName").value = "";
+$("#clientPhone").value = "";
+openModal("modalClient");
+$("#clientName").focus();
+}
+
+function openEditClient(client){
+editingClientId = client.id;
+$("#modalClientTitle").textContent = "Editează client";
+$("#clientName").value = client.name || "";
+$("#clientPhone").value = client.phone || "";
+openModal("modalClient");
+$("#clientName").focus();
+}
+
+function saveClientFromModal(){
+const name = $("#clientName").value.trim();
+const phone = $("#clientPhone").value.trim();
+if(!name){
+showToast("Numele clientului este obligatoriu.");
+return;
+}
+
+if(editingClientId){
+const c = state.clients.find(x=>x.id===editingClientId);
+if(!c) return;
+c.name = name;
+c.phone = phone;
+showToast("Client actualizat.");
+}else{
+const id = uid("c");
+state.clients.push({ id, name, phone, createdAt: nowISO() });
+state.selectedClientId = id;
+state.activeTab = "unpaid";
+showToast("Client adăugat.");
+}
+
+closeModal("modalClient");
+render();
+}
+
+let addingItemClientId = null;
+
+function openAddItem(clientId){
+addingItemClientId = clientId;
+$("#modalItemTitle").textContent = "Adaugă piesă";
+$("#itemName").value = "";
+$("#itemQty").value = "";
+$("#itemPrice").value = "";
+$("#itemNotes").value = "";
+openModal("modalItem");
+$("#itemName").focus();
+}
+
+function saveItemFromModal(){
+const name = $("#itemName").value.trim();
+const qty = parseDecimal($("#itemQty").value);
+const price = parseDecimal($("#itemPrice").value);
+const notes = $("#itemNotes").value.trim();
+
+if(!name){
+showToast("Denumirea piesei este obligatorie.");
+return;
+}
+if(!Number.isFinite(qty) || qty <= 0){
+showToast("Cantitatea trebuie să fie un număr > 0 (ex: 1.5).");
+return;
+}
+if(!Number.isFinite(price) || price < 0){
+showToast("Prețul trebuie să fie un număr (ex: 120).");
+return;
+}
+
+state.items.push({
+id: uid("i"),
+clientId: addingItemClientId,
+name,
+qty,
+price,
+notes,
+status: "unpaid",
+addedAt: nowISO(),
+paidAt: null
+});
+
+closeModal("modalItem");
+showToast("Piesă adăugată.");
+render();
+}
+
+function payItems(ids){
+if(!ids || !ids.length){
+showToast("Selectează cel puțin o piesă.");
+return;
+}
+if(!confirm(`Marchezi ca ACHITATE ${ids.length} piesă(e)?`)) return;
+
+const ts = nowISO();
+state.items.forEach(it=>{
+if(ids.includes(it.id)){
+it.status = "paid";
+it.paidAt = ts;
+}
+});
+showToast("Mutat în istoric (achitat).");
+render();
+}
+
+/* =========================
+Export / Import / Reset
+========================= */
+function doExport(){
+const payload = {
+exportedAt: nowISO(),
+version: 1,
+clients: state.clients,
+items: state.items
+};
+const text = JSON.stringify(payload, null, 2);
+
+// Download as file
+const blob = new Blob([text], {type:"application/json"});
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = `magazin-piese-export-${new Date().toISOString().slice(0,10)}.json`;
+document.body.appendChild(a);
+a.click();
+a.remove();
+URL.revokeObjectURL(url);
+
+showToast("Export făcut (JSON).");
+}
+
+function openImport(){
+$("#importText").value = "";
+openModal("modalImport");
+}
+
+function doImport(){
+const text = $("#importText").value.trim();
+if(!text){
+showToast("Lipește JSON-ul în câmp.");
+return;
+}
+try{
+const data = JSON.parse(text);
+if(!data || !Array.isArray(data.clients) || !Array.isArray(data.items)){
+showToast("JSON invalid: lipsesc clients/items.");
+return;
+}
+state.clients = data.clients;
+state.items = data.items;
+state.selectedClientId = state.clients[0]?.id ?? null;
+state.activeTab = "unpaid";
+closeModal("modalImport");
+showToast("Import reușit.");
+render();
+}catch(e){
+showToast("Nu pot importa: JSON invalid.");
+}
+}
+
+function resetAll(){
+if(!confirm("Sigur vrei să ștergi toate datele?")) return;
+localStorage.removeItem(STORAGE_KEY);
+state.clients = [];
+state.items = [];
+state.selectedClientId = null;
+state.activeTab = "unpaid";
+state.clientSearch = "";
+showToast("Date resetate.");
+render();
+}
+
+/* =========================
+Global Event Bindings
+========================= */
+function bind(){
+$("#btnAddClient").addEventListener("click", openAddClient);
+
+$("#clientSearch").addEventListener("input", (e)=>{
+state.clientSearch = e.target.value;
+renderClients();
+});
+
+// Tabs
+$("#tabs").addEventListener("click", (e)=>{
+const t = e.target.closest(".tab");
+if(!t) return;
+state.activeTab = t.dataset.tab;
+renderDetails();
+save();
+});
+
+// Client header actions
+$("#btnEditClient").addEventListener("click", ()=>{
+const c = state.clients.find(x=>x.id===state.selectedClientId);
+if(c) openEditClient(c);
+});
+
+$("#btnDeleteClient").addEventListener("click", ()=>{
+const c = state.clients.find(x=>x.id===state.selectedClientId);
+if(!c) return;
+if(!confirm(`Ștergi clientul "${c.name}" și toate piesele lui?`)) return;
+state.clients = state.clients.filter(x=>x.id!==c.id);
+state.items = state.items.filter(it=>it.clientId!==c.id);
+state.selectedClientId = state.clients[0]?.id ?? null;
+showToast("Client șters.");
+render();
+});
+
+// Client modal
+$("#closeClientModal").addEventListener("click", ()=> closeModal("modalClient"));
+$("#cancelClient").addEventListener("click", ()=> closeModal("modalClient"));
+$("#saveClient").addEventListener("click", saveClientFromModal);
+
+// Item modal
+$("#closeItemModal").addEventListener("click", ()=> closeModal("modalItem"));
+$("#cancelItem").addEventListener("click", ()=> closeModal("modalItem"));
+$("#saveItem").addEventListener("click", saveItemFromModal);
+
+// Close modal on backdrop click
+["modalClient","modalItem","modalImport"].forEach(id=>{
+const el = document.getElementById(id);
+el.addEventListener("click", (e)=>{
+if(e.target === el) closeModal(id);
+});
+});
+
+// Export/Import/Reset
+$("#btnExport").addEventListener("click", doExport);
+$("#btnImport").addEventListener("click", openImport);
+$("#btnReset").addEventListener("click", resetAll);
+
+// Import modal
+$("#closeImportModal").addEventListener("click", ()=> closeModal("modalImport"));
+$("#cancelImport").addEventListener("click", ()=> closeModal("modalImport"));
+$("#doImport").addEventListener("click", doImport);
+
+// Keyboard shortcuts
+document.addEventListener("keydown", (e)=>{
+if(e.key === "Escape"){
+["modalClient","modalItem","modalImport"].forEach(id=>{
+const el = document.getElementById(id);
+if(el.style.display === "flex") closeModal(id);
+});
+}
+// Ctrl/Cmd+F focus search
+if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==="f"){
+e.preventDefault();
+$("#clientSearch").focus();
+}
+});
+}
+
+/* =========================
+Init
+========================= */
+load();
+bind();
+render();
+</script>
+</body>
+</html>
